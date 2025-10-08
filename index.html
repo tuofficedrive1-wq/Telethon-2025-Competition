@@ -15,18 +15,30 @@
             font-family: 'Poppins', sans-serif;
             background: #f3f4f6; /* Light gray background */
         }
-        /* Custom styles for glowing effect and animations */
-        .card-highlight {
-            box-shadow: 0 0 25px 5px rgba(22, 163, 74, 0.6); /* Green glow for light theme */
-            transform: scale(1.05);
-            border-color: #16A34A;
-        }
+        
         .card {
             transition: all 0.5s ease-in-out;
         }
         .score-value {
             transition: all 0.5s ease-in-out;
         }
+
+        /* Highlight animation for the winning card */
+        @keyframes pulse-glow {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 15px 3px rgba(22, 163, 74, 0.4);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 30px 8px rgba(22, 163, 74, 0.7);
+            }
+        }
+        .card-highlight {
+            animation: pulse-glow 2s infinite ease-in-out;
+            border-color: #16A34A;
+        }
+
         .loader {
             border: 4px solid #e5e7eb;
             border-top: 4px solid #3b82f6;
@@ -39,6 +51,37 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        /* New styles for the subtitle */
+        #subtitle {
+            animation: float-text 4s infinite ease-in-out;
+        }
+        .team-name {
+            color: #374151; /* Dark gray for team names */
+        }
+        .vs-text {
+            font-weight: 900; /* Extra bold */
+            color: #FFD700; /* Gold color */
+            /* 3D Gold Effect */
+            text-shadow: 
+                0px 1px 0px #c9a600,
+                0px 2px 0px #b69300,
+                0px 3px 0px #a48000,
+                0px 4px 5px rgba(0, 0, 0, 0.5);
+            margin: 0 0.5rem;
+            display: inline-block; /* Needed for transform */
+            transform: translateY(-2px); /* Lifts it slightly */
+        }
+
+        /* New floating animation for the subtitle */
+        @keyframes float-text {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
     </style>
 </head>
 <body class="text-gray-800 flex items-center justify-center min-h-screen p-4">
@@ -50,6 +93,12 @@
                 Telethon 2025
             </h1>
             <p class="text-gray-600 mt-2 text-lg">Live Scoreboard</p>
+            <!-- Animated Subtitle with 3D Gold VS -->
+            <h2 id="subtitle" class="text-2xl md:text-3xl font-bold mt-4 tracking-wider">
+                <span class="team-name">Academic Teachers</span>
+                <span class="vs-text">VS</span>
+                <span class="team-name">Qari Sahiban</span>
+            </h2>
         </header>
 
         <!-- Dashboard Section -->
@@ -60,7 +109,7 @@
                 <div id="team-academic-teachers" class="card bg-white border-2 border-gray-200 p-8 rounded-2xl text-center flex flex-col justify-between shadow-lg">
                     <h2 class="text-3xl font-bold text-emerald-600 mb-4">Academic Teachers</h2>
                     <div>
-                        <p class="text-6xl md:text-8xl font-black score-value" data-team="Academic Teachers">0.00</p>
+                        <p class="text-6xl md:text-8xl font-black score-value" data-team="Academic Teachers">0.0</p>
                         <p class="text-gray-500 text-lg">Total Units</p>
                     </div>
                 </div>
@@ -69,7 +118,7 @@
                 <div id="team-qari-sahiban" class="card bg-white border-2 border-gray-200 p-8 rounded-2xl text-center flex flex-col justify-between shadow-lg">
                     <h2 class="text-3xl font-bold text-cyan-600 mb-4">Qari Sahiban</h2>
                     <div>
-                         <p class="text-6xl md:text-8xl font-black score-value" data-team="Qari Sahiban">0.00</p>
+                         <p class="text-6xl md:text-8xl font-black score-value" data-team="Qari Sahiban">0.0</p>
                          <p class="text-gray-500 text-lg">Total Units</p>
                     </div>
                 </div>
@@ -78,7 +127,7 @@
             <!-- Difference and Status -->
             <div class="bg-white p-6 rounded-2xl text-center shadow-lg">
                  <h3 class="text-2xl font-bold mb-2">Unit Difference</h3>
-                 <p id="difference-value" class="text-5xl font-black text-yellow-500 mb-2">0.00</p>
+                 <p id="difference-value" class="text-5xl font-black text-yellow-500 mb-2">0.0</p>
                  <p id="leading-team-text" class="text-gray-600 text-lg">Abhi Muqabla Barabar Hai</p>
                  <div id="loader-container" class="mt-4 flex justify-center items-center gap-3">
                     <div class="loader"></div>
@@ -99,7 +148,6 @@
             const lastUpdatedContainer = document.getElementById('last-updated-container');
             const lastUpdatedTime = document.getElementById('last-updated-time');
 
-            // Updated Google Sheet URL from the published link
             const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT4GPTkOZ0vHaY96J6IHMsn8V7mijWFFG5pDRydvcQghiRaeVN355kQsZd81wPIG6KyvsDWG1hN_4Eq/pub?output=csv&gid=178682675';
             
             let fetchDataInterval;
@@ -122,7 +170,6 @@
                 hideError();
 
                 try {
-                    // Added a cache-busting parameter to ensure fresh data is fetched
                     const urlWithCacheBust = url + '&_=' + new Date().getTime();
                     const response = await fetch(urlWithCacheBust);
                     if (!response.ok) throw new Error(`Network response was not ok. Status: ${response.status}`);
@@ -154,7 +201,6 @@
 
                 lines.forEach(line => {
                     const row = line.split(',');
-                    // We only need the first two columns (Team and Units) now
                     if (row && row.length >= 2) { 
                         const team = (row[0] || '').trim().replace(/"/g, '');
                         const units = parseFloat((row[1] || '0').trim());
@@ -208,11 +254,11 @@
                     if (!startTimestamp) startTimestamp = timestamp;
                     const progress = Math.min((timestamp - startTimestamp) / duration, 1);
                     const currentValue = progress * (end - start) + start;
-                    element.innerText = isFloat ? currentValue.toFixed(2) : Math.floor(currentValue).toLocaleString();
+                    element.innerText = isFloat ? currentValue.toFixed(1) : Math.floor(currentValue).toLocaleString();
                     if (progress < 1) {
                         window.requestAnimationFrame(step);
                     } else {
-                        element.innerText = isFloat ? end.toFixed(2) : end.toLocaleString();
+                        element.innerText = isFloat ? end.toFixed(1) : end.toLocaleString();
                     }
                 };
                 window.requestAnimationFrame(step);
