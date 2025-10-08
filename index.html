@@ -206,10 +206,11 @@
                         const units = parseFloat((row[1] || '0').trim());
 
                         if (!isNaN(units)) {
+                            // Using direct assignment instead of accumulation for robustness
                             if (team.toLowerCase().includes('academic')) {
-                                scores['Academic Teachers'] += units;
+                                scores['Academic Teachers'] = units;
                             } else if (team.toLowerCase().includes('qari')) {
-                                scores['Qari Sahiban'] += units;
+                                scores['Qari Sahiban'] = units;
                             }
                         }
                     }
@@ -265,6 +266,7 @@
             }
 
             fetchAndDisplayData(sheetUrl);
+            // Changed interval back to 5 seconds (5000ms) as requested
             fetchDataInterval = setInterval(() => fetchAndDisplayData(sheetUrl), 5000);
         });
     </script>
