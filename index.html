@@ -27,7 +27,23 @@
             text-fill-color: transparent;
             text-shadow: 2px 2px 8px rgba(0,0,0,0.05);
         }
-        .header-subtitle { color: #40916c; }
+        
+        .animated-subtitle {
+            font-weight: 700;
+            background: linear-gradient(90deg, #2d6a4f, #b7e4c7, #2d6a4f);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+            animation: shimmer 4s linear infinite;
+        }
+
+        @keyframes shimmer {
+            to {
+                background-position: -200% center;
+            }
+        }
         
         .category-box {
             background-color: #ffffff;
@@ -128,7 +144,7 @@
         <div id="scoreboard-section">
             <div class="text-center mb-10">
                 <h1 class="header-title text-5xl md:text-6xl font-black tracking-tight">TELETHON 2025</h1>
-                <p class="header-subtitle text-xl md:text-2xl mt-2 font-medium">Live Team Categories</p>
+                <p class="animated-subtitle text-2xl md:text-3xl mt-4">🏆 GRAND FINAL MUQABLA 🏆</p>
                 <div id="countdown-container" class="mt-6">
                      <div id="countdown-timer"></div>
                 </div>
@@ -260,7 +276,7 @@
                             </div>
                          `;
                     } else {
-                         matchesHtml += `<div class="team-row text-xl"><span class="font-bold text-gray-700">${topTierTeams[i].name} (${topTierTeams[i].score})</span> <span class="text-gray-500 ml-4">- Awaiting Opponent</span></div>`;
+                         matchesHtml += `<div class="team-row text-xl"><span class="font-bold text-gray-700">${topTierTeams[i].name} (${topTierTeams[i].score})</span> <span class="text-gray-500 ml-4">- Muqabil Ka Intizar Hai.</span></div>`;
                     }
                 }
                 topMatchesList.innerHTML = matchesHtml;
@@ -301,10 +317,10 @@
 
                 if (nextCategory && neededScore > 0) {
                     promotionText = `
-                        <span class="text-sm text-gray-500 font-medium">
-                            ${nextCategory} ke liye 
-                            <span class="animated-score text-green-600 font-bold">${neededScore}</span> 
-                            Units aur chahiye
+                        <span class="text-sm text-green-600 font-medium flex items-center">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
+                            <span class="animated-score font-bold">${neededScore}</span> 
+                            <span class="ml-1 font-normal text-gray-500">Units</span>
                         </span>`;
                 }
 
@@ -352,7 +368,7 @@
                 mainContainer.className = 'main-container max-w-3xl lg:max-w-5xl xl:max-w-7xl mx-auto shadow-xl p-6 sm:p-8 lg:p-12';
                 mainContainer.innerHTML = `
                     <div class="announcement-container text-center flex flex-col justify-center items-center h-96">
-                         <h2 class="header-subtitle text-4xl md:text-5xl font-bold mb-4">Winner Announcement</h2>
+                         <h2 class="animated-subtitle text-4xl md:text-5xl font-bold mb-4">Winner Announcement</h2>
                          <div id="announcement-countdown" class="header-title text-9xl font-black">5</div>
                     </div>
                 `;
