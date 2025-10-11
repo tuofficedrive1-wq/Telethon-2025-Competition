@@ -97,6 +97,15 @@
             padding: 0 4px;
         }
 
+        @keyframes newEntryFlash {
+          0% { background-color: #d1fae5; transform: translateX(-10px); }
+          50% { background-color: #d1fae5; transform: translateX(0); }
+          100% { background-color: transparent; }
+        }
+        .new-entry {
+          animation: newEntryFlash 2.5s ease-out;
+        }
+
         .winner-screen-container {
             animation: fadeIn 1s ease-in-out;
             background: linear-gradient(160deg, #f0f9ff 0%, #e0f2fe 100%);
@@ -115,13 +124,12 @@
 </head>
 <body class="text-gray-800 p-4 sm:p-6 md:p-8">
 
-    <div id="main-content" class="main-container max-w-5xl mx-auto shadow-lg p-6 sm:p-8 lg:p-12">
+    <div id="main-content" class="main-container max-w-7xl mx-auto shadow-lg p-6 sm:p-8 lg:p-12">
         <div id="scoreboard-section">
             <div class="text-center mb-10">
                 <h1 class="header-title text-5xl md:text-6xl font-black tracking-tight">TELETHON 2025</h1>
                 <p class="header-subtitle text-xl md:text-2xl mt-2 font-medium">Live Team Categories</p>
-                <div id="countdown-container" class="mt-8">
-                     <h3 class="text-lg font-semibold text-gray-600 mb-3 uppercase tracking-widest">Time Remaining</h3>
+                <div id="countdown-container" class="mt-6">
                      <div id="countdown-timer"></div>
                 </div>
             </div>
@@ -137,7 +145,7 @@
                 </div>
 
                 <!-- Categories Grid -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <div id="team-a-plus" class="category-box">
                         <h3 class="category-title">Team A+</h3>
                         <div id="team-a-plus-list" class="team-list-container"></div>
@@ -171,6 +179,7 @@
 
         const mainContainer = document.getElementById('main-content');
         let scoreInterval;
+        let previousTeamState = {};
 
         async function fetchScores() {
             try {
@@ -202,13 +211,25 @@
             });
             
             const teamAPlus = [], teamA = [], teamB = [], teamC = [], topTierTeams = [];
+            const currentTeamState = {};
 
             allTeams.forEach(team => {
-                if(team.score > 72) topTierTeams.push(team);
-                else if (team.score > 50) teamAPlus.push(team);
-                else if (team.score > 35) teamA.push(team);
-                else if (team.score > 25) teamB.push(team);
-                else teamC.push(team);
+                if(team.score > 72) {
+                    topTierTeams.push(team);
+                    currentTeamState[team.name] = 'Top';
+                } else if (team.score > 50) {
+                    teamAPlus.push(team);
+                    currentTeamState[team.name] = 'A+';
+                } else if (team.score > 35) {
+                    teamA.push(team);
+                    currentTeamState[team.name] = 'A';
+                } else if (team.score > 25) {
+                    teamB.push(team);
+                    currentTeamState[team.name] = 'B';
+                } else {
+                    teamC.push(team);
+                    currentTeamState[team.name] = 'C';
+                }
             });
 
             // Sort each category by score
@@ -247,6 +268,8 @@
                 topTierContainer.classList.add('hidden');
                 topMatchesList.innerHTML = '';
             }
+            
+            previousTeamState = currentTeamState;
         }
         
         function renderCategory(containerId, teams, category) {
@@ -257,6 +280,10 @@
                 return;
             }
             container.innerHTML = teams.map(team => {
+                const previousCategory = previousTeamState[team.name];
+                const isNewEntry = previousCategory && previousCategory !== category;
+                const entryClass = isNewEntry ? 'new-entry' : '';
+
                 let promotionText = '';
                 let neededScore = 0;
                 let nextCategory = '';
@@ -283,7 +310,7 @@
 
 
                 return `
-                <div class="team-row">
+                <div class="team-row ${entryClass}">
                     <div>
                         <div class="font-semibold text-gray-700 truncate pr-4 text-xl">${team.name}</div>
                         ${promotionText}
@@ -309,12 +336,12 @@
                 const [h, m, s] = [Math.floor((distance / (1000*60*60)) % 24), Math.floor((distance / (1000*60)) % 60), Math.floor((distance / 1000) % 60)];
                 const f = n => (n<10?'0'+n:n);
                 if(countdownElement) countdownElement.innerHTML = `
-                     <div class="flex justify-center items-center space-x-2 md:space-x-4">
-                        <div class="text-center bg-gray-100 p-3 md:p-4 rounded-lg w-28 shadow-inner"><div class="text-4xl md:text-5xl lg:text-6xl font-black text-gray-800">${f(h)}</div><div class="text-xs md:text-sm font-semibold text-gray-500 uppercase">Hours</div></div>
-                        <div class="text-4xl md:text-5xl font-black text-gray-400">:</div>
-                        <div class="text-center bg-gray-100 p-3 md:p-4 rounded-lg w-28 shadow-inner"><div class="text-4xl md:text-5xl lg:text-6xl font-black text-gray-800">${f(m)}</div><div class="text-xs md:text-sm font-semibold text-gray-500 uppercase">Minutes</div></div>
-                        <div class="text-4xl md:text-5xl font-black text-gray-400">:</div>
-                        <div class="text-center bg-gray-100 p-3 md:p-4 rounded-lg w-28 shadow-inner"><div class="text-4xl md:text-5xl lg:text-6xl font-black text-gray-800">${f(s)}</div><div class="text-xs md:text-sm font-semibold text-gray-500 uppercase">Seconds</div></div>
+                     <div class="flex justify-center items-center space-x-2">
+                        <div class="text-center bg-gray-100 p-3 rounded-lg w-24 shadow-inner"><div class="text-3xl md:text-4xl font-black text-gray-800">${f(h)}</div><div class="text-xs font-semibold text-gray-500 uppercase">Hours</div></div>
+                        <div class="text-3xl font-black text-gray-400">:</div>
+                        <div class="text-center bg-gray-100 p-3 rounded-lg w-24 shadow-inner"><div class="text-3xl md:text-4xl font-black text-gray-800">${f(m)}</div><div class="text-xs font-semibold text-gray-500 uppercase">Minutes</div></div>
+                        <div class="text-3xl font-black text-gray-400">:</div>
+                        <div class="text-center bg-gray-100 p-3 rounded-lg w-24 shadow-inner"><div class="text-3xl md:text-4xl font-black text-gray-800">${f(s)}</div><div class="text-xs font-semibold text-gray-500 uppercase">Seconds</div></div>
                     </div>`;
             }, 1000);
         }
