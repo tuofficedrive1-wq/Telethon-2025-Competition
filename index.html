@@ -330,7 +330,7 @@
         function startCountdown() {
             const countdownElement = document.getElementById('countdown-timer');
             const today = new Date();
-            const countDownDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 30, 0).getTime();
+            const countDownDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 35, 0).getTime();
             const interval = setInterval(() => {
                 const distance = countDownDate - new Date().getTime();
                 if (distance < 0) {
@@ -443,7 +443,7 @@
             const today = new Date();
             const tomorrow = new Date(today);
             tomorrow.setDate(tomorrow.getDate() + 1);
-            const countDownDate = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 0, 35, 0).getTime();
+            const countDownDate = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 0, 40, 0).getTime();
             
             const interval = setInterval(() => {
                 const distance = countDownDate - new Date().getTime();
@@ -452,7 +452,7 @@
                     if (scoreInterval) clearInterval(scoreInterval);
                     if(countdownElement) countdownElement.innerHTML = `<div class="text-2xl font-bold text-gray-200">Muqabla Khatm Hua! Winners ka elaan 12:15 AM par hoga.</div>`;
                     
-                    const announceTime = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 0, 36, 0).getTime();
+                    const announceTime = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 0, 41, 0).getTime();
                     const delay = announceTime - new Date().getTime();
                     setTimeout(announceRegionWinners, Math.max(0, delay));
                     return;
@@ -569,6 +569,7 @@
 
 </body>
 </html>
+
 
 
 
