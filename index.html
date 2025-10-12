@@ -330,7 +330,7 @@
         function startCountdown() {
             const countdownElement = document.getElementById('countdown-timer');
             const today = new Date();
-            const countDownDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 59, 0).getTime();
+            const countDownDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 01, 00, 0).getTime();
             const interval = setInterval(() => {
                 const distance = countDownDate - new Date().getTime();
                 if (distance < 0) {
@@ -443,7 +443,7 @@
             const today = new Date();
             const tomorrow = new Date(today);
             tomorrow.setDate(tomorrow.getDate() + 1);
-            const countDownDate = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 0, 59, 0).getTime();
+            const countDownDate = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 01, 05, 0).getTime();
             
             const interval = setInterval(() => {
                 const distance = countDownDate - new Date().getTime();
@@ -569,6 +569,7 @@
 
 </body>
 </html>
+
 
 
 
